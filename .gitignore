@@ -1,0 +1,15 @@
+# data (download the Kaggle CSVs into data/)
+data/*.csv
+
+# artifacts
+mlruns/
+*.pth
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+mlflow.db
+.vscode/
