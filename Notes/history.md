@@ -121,3 +121,10 @@ Macro avg precision and f1 score are very high.
 Weighted avg precision and f1 score are very high.
 
 Going to try to use class balanced weighting for the final model.
+
+## Next steps:
+
+- Run more epochs with class balanced weighting.
+- Try optimizers like Optuna, AdamW, etc.
+- Try different models even deeper or wider or with more layers or different architecture.
+- Just more experimentation in general.
