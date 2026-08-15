@@ -128,3 +128,20 @@ Going to try to use class balanced weighting for the final model.
 - Try optimizers like Optuna, AdamW, etc.
 - Try different models even deeper or wider or with more layers or different architecture.
 - Just more experimentation in general.
+
+## Run 4: 'class balanced' weighting with 100 epochs
+
+Model:
+
+`` Same as before
+
+Specs:
+
+-- GPU: RTX 4090
+-- Batch size: 512
+-- Learning rate: 0.001
+-- Epochs: 100
+-- Weight decay: 0.0001
+-- Optimizer: AdamW
+-- Scheduler: CosineAnnealingLR
+-- Early stopping: 10 epochs without improvement
