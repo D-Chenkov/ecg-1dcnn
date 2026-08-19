@@ -58,6 +58,28 @@ def class_weights(y, scheme, n_classes=5, beta=0.999):
     return torch.tensor(w, dtype=torch.float32)
 
 
+MINORITY = (1, 2, 3, 4)   # all classes except N (0)
+
+
+def augment_minority(x, y, p=0.5, noise_std=0.03, scale_amt=0.1, max_shift=5):
+    """Light on-the-fly augmentation of minority-class beats (train only):
+    random amplitude scale + Gaussian noise + small time shift. Attacks the
+    imbalance at the DATA level (better than loss weighting alone)."""
+    mask = torch.isin(y, torch.tensor(MINORITY, device=y.device)) & (torch.rand(y.shape, device=y.device) < p)
+    if not mask.any():
+        return x
+    x = x.clone()
+    idx = mask.nonzero(as_tuple=True)[0]
+    sub = x[idx]
+    sub = sub * (1 + (torch.rand(sub.size(0), 1, 1, device=x.device) * 2 - 1) * scale_amt)  # amplitude
+    sub = sub + torch.randn_like(sub) * noise_std                                            # noise
+    if max_shift > 0:
+        shifts = torch.randint(-max_shift, max_shift + 1, (sub.size(0),))
+        sub = torch.stack([torch.roll(sub[i], shifts=int(shifts[i]), dims=-1) for i in range(sub.size(0))])
+    x[idx] = sub
+    return x
+
+
 def val_macro_f1(model, dl, device):
     model.eval()
     preds, ys = [], []
@@ -81,6 +103,8 @@ def main():
     ap.add_argument("--patience", type=int, default=7, help="early-stop patience on val macro-F1")
     ap.add_argument("--amp", action=argparse.BooleanOptionalAction, default=True,
                     help="mixed precision on CUDA (--no-amp to disable)")
+    ap.add_argument("--augment", action=argparse.BooleanOptionalAction, default=True,
+                    help="minority-class augmentation on train batches (--no-augment to disable)")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out", default="ecg_1dcnn.pth")
     args = ap.parse_args()
@@ -120,6 +144,8 @@ def main():
             running = 0.0
             for x, y in train_dl:
                 x, y = x.to(device), y.to(device)
+                if args.augment:
+                    x = augment_minority(x, y)     # train-only; val/test stay clean
                 opt.zero_grad()
                 with autocast(device_type="cuda", enabled=use_amp):
                     loss = loss_fn(model(x), y)
