@@ -145,3 +145,34 @@ Specs:
 -- Optimizer: AdamW
 -- Scheduler: CosineAnnealingLR
 -- Early stopping: 10 epochs without improvement
+
+
+### Metrics
+```
+                precision    recall  f1-score   support
+
+    N (normal)      0.989     0.997     0.993     18118
+S (supravent.)      0.919     0.759     0.832       556
+  V (ventric.)      0.971     0.957     0.964      1448
+    F (fusion)      0.840     0.747     0.791       162
+   Q (unknown)      0.994     0.986     0.990      1608
+
+      accuracy                          0.986     21892
+     macro avg      0.943     0.889     0.914     21892
+  weighted avg      0.985     0.986     0.985     21892
+```
+
+### Confusion Matrix
+```
+confusion matrix (rows = true, cols = pred):
+[[18062    29    18     4     5]
+ [  128   422     5     0     1]
+ [   34     7  1386    18     3]
+ [   22     1    18   121     0]
+ [   21     0     1     1  1585]]
+ ```
+
+ ### Notes
+
+ Great improvements, we got the weighted average we needed. These numbers are fantastic! 
+ early stop @ epoch 67 (no val gain in 7)
