@@ -71,5 +71,5 @@ docker build -t ecg-1dcnn:v1 . && docker run -p 8080:8080 ecg-1dcnn:v1
 - [x] Train 1D-ResNet, log to MLflow (seed, val split, early stopping, AMP)
 - [x] Per-class precision/recall + confusion matrix (macro-F1 0.914)
 - [x] FastAPI `/predict` + `/health` + Dockerfile + tests
-- [ ] Patient-wise (inter-patient) split to report honest generalization
+- [ ] Patient-wise (inter-patient) split to report honest generalization # Just made a report on that, but not actually fixing here...yet.
 - [ ] (stretch) raw-signal WFDB segmentation; ensembling / focal loss
